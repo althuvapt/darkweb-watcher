@@ -1,0 +1,68 @@
+services:
+  tor:
+    image: alpine:latest
+    command: >
+      sh -c "apk add --no-cache tor &&
+             echo 'SocksPort 0.0.0.0:9050' > /etc/tor/torrc &&
+             tor -f /etc/tor/torrc"
+    ports:
+      - "9050:9050"
+    restart: always
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: always
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: always
+
+  elasticsearch:
+    image: elasticsearch:8.13.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    restart: always
+
+  crawler:
+    build: .
+    depends_on:
+      - tor
+      - redis
+      - mongodb
+      - elasticsearch
+    environment:
+      - TOR_SOCKS_URL=socks5://tor:9050
+      - REDIS_URL=redis://redis:6379/0
+      - MONGO_URL=mongodb://mongodb:27017/
+      - ES_URL=http://elasticsearch:9200/
+    volumes:
+      - .:/app
+    command: python -m src.main
+
+  api:
+    build: .
+    command: uvicorn src.api:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    depends_on:
+      - elasticsearch
+      - mongodb
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/
+      - ES_URL=http://elasticsearch:9200/
+
+volumes:
+  mongo_data:
+  es_data:

@@ -1,0 +1,12 @@
+beautifulsoup4
+pydantic-settings
+python-dotenv
+aiohttp
+aiohttp_socks
+redis[hiredis]
+motor
+elasticsearch[async]<9.0.0
+spacy
+pyyaml
+fastapi
+uvicorn

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkOps Intelligence Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="glitch" data-text="DARK">DARK</span><span class="accent">OPS</span>
+            </div>
+            
+            <nav>
+                <a href="#" class="nav-item active">Dashboard</a>
+                <a href="#" class="nav-item">Watchlists</a>
+                <a href="#" class="nav-item">Settings</a>
+            </nav>
+
+            <div class="stats-box">
+                <h4>System Status</h4>
+                <div class="stat-row">
+                    <span>Index Size</span>
+                    <span id="stat-total-pages" class="value loading">--</span>
+                </div>
+                <div class="stat-row">
+                    <span>Target Entities</span>
+                    <span id="stat-entities" class="value loading">--</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-container">
+                    <form id="search-form">
+                        <input type="text" id="search-input" placeholder="Search crawled pages, onion links, or specific targets..." autocomplete="off">
+                        <button type="submit" class="search-btn">SCAN</button>
+                    </form>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Left: Stats & Charts -->
+                <section class="panel stats-panel">
+                    <div class="panel-header">
+                        <h2>Analytics Overview</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="intelligenceChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Right: Data Panel -->
+                <section class="panel results-panel">
+                    <div class="panel-header">
+                        <h2>Intelligence Feed <span class="badge" id="results-count">0</span></h2>
+                        <div id="loader" class="loader hidden"></div>
+                    </div>
+                    <div class="results-container" id="results-container">
+                        <!-- Results injected here via JS -->
+                        <div class="empty-state">
+                            <p>Awaiting search query.</p>
+                            <span>Enter a term or keyword to scan the elasticsearch index.</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
